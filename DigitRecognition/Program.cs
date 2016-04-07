@@ -1,4 +1,4 @@
-﻿using Accord.MachineLearning;
+﻿//using Accord.MachineLearning;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -55,15 +55,15 @@ namespace DigitRecognition
 
 
 
-            KNearestNeighbors knn = new KNearestNeighbors(k: 4, classes: 3, inputs: inputs.ToArray(), outputs: outputs.ToArray());
+           // KNearestNeighbors knn = new KNearestNeighbors(k: 4, classes: 3, inputs: inputs.ToArray(), outputs: outputs.ToArray());
 
 
-            int answer = knn.Compute(new double[] { 11, 5, 4 }); // 2
-            int answer2 = knn.Compute(new double[] { -11, -5, -4 }); // 0
+           // int answer = knn.Compute(new double[] { 11, 5, 4 }); // 2
+           // int answer2 = knn.Compute(new double[] { -11, -5, -4 }); // 0
 
-            Console.WriteLine("dla: (11, 5, 4)  wynik:" + answer);
-            Console.WriteLine("dla: (-11, -5, -4)  wynik:" + answer2);
-            Console.ReadLine();
+           // Console.WriteLine("dla: (11, 5, 4)  wynik:" + answer);
+           // Console.WriteLine("dla: (-11, -5, -4)  wynik:" + answer2);
+           // Console.ReadLine();
         }
     }
 
