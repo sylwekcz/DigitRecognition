@@ -16,24 +16,14 @@ namespace DigitRecognition
         HSLFilteringForm colorForm;
         private bool CaptureNotInitialized = true;
         private bool CaptureOn = false;
-
         Bitmap originalVideo, filteredVideo, binarizedVideo;
+
         //filters
         HSLFiltering hlsColorFilter = new HSLFiltering();
         Grayscale grayFilter = new Grayscale(0.2125, 0.7154, 0.0721);
         Median medianFilter = new Median();
         Threshold binarizeFilter = new Threshold(25);
         Mirror mirrorFilter = new Mirror(false, true);
-
-
-
-        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            if (VideoCaptureDevices.Count > 0 && FinalVideo != null)
-            {
-                FinalVideo.Stop();
-            }
-        }
 
         public Form1()
         {
@@ -45,11 +35,16 @@ namespace DigitRecognition
 
         }
 
-        
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (FinalVideo != null)
+            {
+                FinalVideo.Stop();
+            }
+        }
 
         private void buttonColorPick_Click(object sender, EventArgs e)
-        {
-            
+        {            
             colorForm.Show();            
         }
        
@@ -65,26 +60,26 @@ namespace DigitRecognition
             }
             else
             {
-                if (CaptureNotInitialized&& VideoCaptureDevices.Count>0)
+                if (VideoCaptureDevices.Count>0)
                 {
-
-                    FinalVideo = new VideoCaptureDevice(VideoCaptureDevices[comboBox1.SelectedIndex].MonikerString);
-                    FinalVideo.VideoResolution = FinalVideo.VideoCapabilities[4];  // resolution
-                    FinalVideo.NewFrame += new NewFrameEventHandler(FinalVideo_NewFrame);
-                    CaptureNotInitialized = false;
-                    FinalVideo.Start();
-                    CaptureOn = true;
-                    btnPlayOrPause.Text = "Pause";
-                }
-                else if(VideoCaptureDevices.Count > 0)
-                {
-                    FinalVideo.Start();
-                    CaptureOn = true;
-                    btnPlayOrPause.Text = "Pause";
-                }
-                             
-
-            }
+                    if (CaptureNotInitialized)
+                    {
+                        FinalVideo = new VideoCaptureDevice(VideoCaptureDevices[comboBox1.SelectedIndex].MonikerString);
+                        FinalVideo.VideoResolution = FinalVideo.VideoCapabilities[4];  // resolution
+                        FinalVideo.NewFrame += new NewFrameEventHandler(FinalVideo_NewFrame);
+                        CaptureNotInitialized = false;
+                        FinalVideo.Start();
+                        CaptureOn = true;
+                        btnPlayOrPause.Text = "Pause";
+                    }
+                    else
+                    {
+                        FinalVideo.Start();
+                        CaptureOn = true;
+                        btnPlayOrPause.Text = "Pause";
+                    }
+                }                
+             }
           
         }
 
@@ -92,8 +87,7 @@ namespace DigitRecognition
         {
             originalVideo = (Bitmap)eventArgs.Frame.Clone();
             if (checkBoxMirror.Checked)
-            {
-                // mirror
+            {   // mirror
                 mirrorFilter.ApplyInPlace(originalVideo);
             }
             pictureBox1.Image = originalVideo;
@@ -129,13 +123,11 @@ namespace DigitRecognition
         }
 
         Bitmap DetectedColor(Bitmap video)
-        {
-            
-            hlsColorFilter = colorForm.Filter;           
-
-            Console.WriteLine(hlsColorFilter.Hue);
+        {            
+           hlsColorFilter = colorForm.Filter; 
            //color filter
-           hlsColorFilter.ApplyInPlace(video);            
+           hlsColorFilter.ApplyInPlace(video);    
+                    
            return video;
         }
         Bitmap DetectedToBinary(Bitmap video)
