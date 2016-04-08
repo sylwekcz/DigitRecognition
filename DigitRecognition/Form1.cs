@@ -64,11 +64,7 @@ namespace DigitRecognition
                 {
                     if (CaptureNotInitialized)
                     {
-                        FinalVideo = new VideoCaptureDevice(VideoCaptureDevices[comboBox1.SelectedIndex].MonikerString);
-                        FinalVideo.VideoResolution = FinalVideo.VideoCapabilities[4];  // resolution
-                        FinalVideo.NewFrame += new NewFrameEventHandler(FinalVideo_NewFrame);
-                        CaptureNotInitialized = false;
-                        FinalVideo.Start();
+                        InitVideoCapture(4);
                         CaptureOn = true;
                         btnPlayOrPause.Text = "Pause";
                     }
@@ -109,9 +105,17 @@ namespace DigitRecognition
 
             if (VideoCaptureDevices.Count > 0)
             {
-                comboBox1.SelectedIndex = 0;
-                
+                comboBox1.SelectedIndex = 0;                
             }
+        }
+
+        void InitVideoCapture( int videoCameraResolutionMode)
+        {
+            FinalVideo = new VideoCaptureDevice(VideoCaptureDevices[comboBox1.SelectedIndex].MonikerString);
+            FinalVideo.VideoResolution = FinalVideo.VideoCapabilities[videoCameraResolutionMode];  // resolution
+            FinalVideo.NewFrame += new NewFrameEventHandler(FinalVideo_NewFrame);
+            CaptureNotInitialized = false;
+            FinalVideo.Start();
         }
 
         private void button1_Click(object sender, EventArgs e)
