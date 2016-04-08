@@ -29,19 +29,17 @@ namespace DigitRecognition
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            FinalVideo.Stop();
+            if (VideoCaptureDevices.Count > 0 && FinalVideo != null)
+            {
+                FinalVideo.Stop();
+            }
         }
 
         public Form1()
         {
             InitializeComponent();
             {
-                VideoCaptureDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
-                foreach (FilterInfo VideoCaptureDevice in VideoCaptureDevices)
-                {
-                    comboBox1.Items.Add(VideoCaptureDevice.Name);
-                }
-                comboBox1.SelectedIndex = 0;
+                InitVideo();
                 colorForm = new HSLFilteringForm();
             }
 
@@ -60,28 +58,31 @@ namespace DigitRecognition
         {                    
 
             if (CaptureOn)
-            {
-                
-
+            {          
                 FinalVideo.Stop();
                 CaptureOn = false;
                 btnPlayOrPause.Text = "Start";
             }
             else
             {
-
-                if (CaptureNotInitialized)
+                if (CaptureNotInitialized&& VideoCaptureDevices.Count>0)
                 {
 
                     FinalVideo = new VideoCaptureDevice(VideoCaptureDevices[comboBox1.SelectedIndex].MonikerString);
                     FinalVideo.VideoResolution = FinalVideo.VideoCapabilities[4];  // resolution
                     FinalVideo.NewFrame += new NewFrameEventHandler(FinalVideo_NewFrame);
                     CaptureNotInitialized = false;
+                    FinalVideo.Start();
+                    CaptureOn = true;
+                    btnPlayOrPause.Text = "Pause";
                 }
-
-                FinalVideo.Start();
-                CaptureOn = true;
-                btnPlayOrPause.Text = "Pause";
+                else if(VideoCaptureDevices.Count > 0)
+                {
+                    FinalVideo.Start();
+                    CaptureOn = true;
+                    btnPlayOrPause.Text = "Pause";
+                }
+                             
 
             }
           
@@ -104,6 +105,28 @@ namespace DigitRecognition
             pictureBox3.Image = binarizedVideo;
         }
 
+        void InitVideo()
+        {
+            VideoCaptureDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
+            foreach (FilterInfo VideoCaptureDevice in VideoCaptureDevices)
+            {
+                comboBox1.Items.Add(VideoCaptureDevice.Name);
+            }
+
+            if (VideoCaptureDevices.Count > 0)
+            {
+                comboBox1.SelectedIndex = 0;
+                
+            }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            comboBox1.Items.Clear();
+            comboBox1.Text = "";
+            InitVideo();
+
+        }
 
         Bitmap DetectedColor(Bitmap video)
         {

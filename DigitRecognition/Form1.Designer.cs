@@ -35,6 +35,7 @@
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.checkBoxMirror = new System.Windows.Forms.CheckBox();
             this.buttonColorPick = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
@@ -44,7 +45,7 @@
             // 
             this.btnPlayOrPause.Location = new System.Drawing.Point(12, 12);
             this.btnPlayOrPause.Name = "btnPlayOrPause";
-            this.btnPlayOrPause.Size = new System.Drawing.Size(75, 23);
+            this.btnPlayOrPause.Size = new System.Drawing.Size(51, 23);
             this.btnPlayOrPause.TabIndex = 0;
             this.btnPlayOrPause.Text = "Start";
             this.btnPlayOrPause.UseVisualStyleBackColor = true;
@@ -69,9 +70,9 @@
             // comboBox1
             // 
             this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(93, 12);
+            this.comboBox1.Location = new System.Drawing.Point(69, 12);
             this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(239, 21);
+            this.comboBox1.Size = new System.Drawing.Size(182, 21);
             this.comboBox1.TabIndex = 3;
             // 
             // pictureBox3
@@ -85,7 +86,7 @@
             // checkBoxMirror
             // 
             this.checkBoxMirror.AutoSize = true;
-            this.checkBoxMirror.Location = new System.Drawing.Point(369, 12);
+            this.checkBoxMirror.Location = new System.Drawing.Point(493, 16);
             this.checkBoxMirror.Name = "checkBoxMirror";
             this.checkBoxMirror.Size = new System.Drawing.Size(52, 17);
             this.checkBoxMirror.TabIndex = 5;
@@ -102,11 +103,22 @@
             this.buttonColorPick.UseVisualStyleBackColor = true;
             this.buttonColorPick.Click += new System.EventHandler(this.buttonColorPick_Click);
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(257, 12);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(59, 21);
+            this.button1.TabIndex = 7;
+            this.button1.Text = "Refresh";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(687, 557);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.buttonColorPick);
             this.Controls.Add(this.checkBoxMirror);
             this.Controls.Add(this.pictureBox3);
@@ -134,6 +146,7 @@
         private System.Windows.Forms.PictureBox pictureBox3;
         private System.Windows.Forms.CheckBox checkBoxMirror;
         private System.Windows.Forms.Button buttonColorPick;
+        private System.Windows.Forms.Button button1;
     }
 }
 
