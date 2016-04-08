@@ -1,17 +1,10 @@
 ﻿
 using AForge;
-using AForge.Imaging;
 using AForge.Imaging.Filters;
 using AForge.Video;
 using AForge.Video.DirectShow;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace DigitRecognition
@@ -20,12 +13,24 @@ namespace DigitRecognition
     {
         private FilterInfoCollection VideoCaptureDevices;
         private VideoCaptureDevice FinalVideo;
-        Bitmap originalVideo, filteredVideo;
-        ColorFiltering colorFilter = new ColorFiltering();
+        HSLFilteringForm colorForm;
         private bool CaptureNotInitialized = true;
         private bool CaptureOn = false;
-        IntRange red, blue, green;
 
+        Bitmap originalVideo, filteredVideo, binarizedVideo;
+        //filters
+        HSLFiltering hlsColorFilter = new HSLFiltering();
+        Grayscale grayFilter = new Grayscale(0.2125, 0.7154, 0.0721);
+        Median medianFilter = new Median();
+        Threshold binarizeFilter = new Threshold(25);
+        Mirror mirrorFilter = new Mirror(false, true);
+
+
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            FinalVideo.Stop();
+        }
 
         public Form1()
         {
@@ -37,30 +42,22 @@ namespace DigitRecognition
                     comboBox1.Items.Add(VideoCaptureDevice.Name);
                 }
                 comboBox1.SelectedIndex = 0;
-
-                red = new IntRange(0, 50);
-                green = new IntRange(100, 255);
-                blue = new IntRange(0, 50);
-
-
-                colorFilter.Red = red;
-                colorFilter.Green = green;
-                colorFilter.Blue = blue;
-
+                colorForm = new HSLFilteringForm();
             }
 
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        
+
+        private void buttonColorPick_Click(object sender, EventArgs e)
         {
-
-        }
-
-       
-        private void btnPlayOrPause_Click(object sender, EventArgs e)
-        {
-
             
+            colorForm.Show();            
+        }
+       
+
+        private void btnPlayOrPause_Click(object sender, EventArgs e)
+        {                    
 
             if (CaptureOn)
             {
@@ -77,6 +74,7 @@ namespace DigitRecognition
                 {
 
                     FinalVideo = new VideoCaptureDevice(VideoCaptureDevices[comboBox1.SelectedIndex].MonikerString);
+                    FinalVideo.VideoResolution = FinalVideo.VideoCapabilities[4];  // resolution
                     FinalVideo.NewFrame += new NewFrameEventHandler(FinalVideo_NewFrame);
                     CaptureNotInitialized = false;
                 }
@@ -92,15 +90,41 @@ namespace DigitRecognition
         void FinalVideo_NewFrame(object sender, NewFrameEventArgs eventArgs)
         {
             originalVideo = (Bitmap)eventArgs.Frame.Clone();
-
-            filteredVideo = (Bitmap)originalVideo.Clone();
+            if (checkBoxMirror.Checked)
+            {
+                // mirror
+                mirrorFilter.ApplyInPlace(originalVideo);
+            }
             pictureBox1.Image = originalVideo;
+            // color filter
+            filteredVideo = DetectedColor((Bitmap)originalVideo.Clone());
+            pictureBox2.Image = filteredVideo;              
+            //binarize
+            binarizedVideo = DetectedToBinary((Bitmap)filteredVideo.Clone());
+            pictureBox3.Image = binarizedVideo;
+        }
 
 
-            // apply the filter
-            colorFilter.ApplyInPlace(filteredVideo);
-            pictureBox2.Image = filteredVideo;
+        Bitmap DetectedColor(Bitmap video)
+        {
+            
+            hlsColorFilter = colorForm.Filter;           
 
+            Console.WriteLine(hlsColorFilter.Hue);
+           //color filter
+           hlsColorFilter.ApplyInPlace(video);            
+           return video;
+        }
+        Bitmap DetectedToBinary(Bitmap video)
+        {
+            // color filter to rgb    
+            video = grayFilter.Apply(video);
+            // binarize
+            binarizeFilter.ApplyInPlace(video);
+            // median filter noise reduction
+            medianFilter.ApplyInPlace(video);            
+
+            return video;
         }
 
     }
