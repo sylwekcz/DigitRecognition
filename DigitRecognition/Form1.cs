@@ -42,43 +42,7 @@ namespace DigitRecognition
                 FinalVideo.Stop();
             }
         }
-
-        private void buttonColorPick_Click(object sender, EventArgs e)
-        {            
-            colorForm.Show();            
-        }
-       
-
-        private void btnPlayOrPause_Click(object sender, EventArgs e)
-        {                    
-
-            if (CaptureOn)
-            {          
-                FinalVideo.Stop();
-                CaptureOn = false;
-                btnPlayOrPause.Text = "Start";
-            }
-            else
-            {
-                if (VideoCaptureDevices.Count>0)
-                {
-                    if (CaptureNotInitialized)
-                    {
-                        InitVideoCapture(4);
-                        CaptureOn = true;
-                        btnPlayOrPause.Text = "Pause";
-                    }
-                    else
-                    {
-                        FinalVideo.Start();
-                        CaptureOn = true;
-                        btnPlayOrPause.Text = "Pause";
-                    }
-                }                
-             }
-          
-        }
-
+        
         void FinalVideo_NewFrame(object sender, NewFrameEventArgs eventArgs)
         {
             originalVideo = (Bitmap)eventArgs.Frame.Clone();
@@ -118,12 +82,46 @@ namespace DigitRecognition
             FinalVideo.Start();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void buttonColorPick_Click(object sender, EventArgs e)
+        {
+            colorForm.Show();
+        }
+
+        private void btnPlayOrPause_Click(object sender, EventArgs e)
+        {
+
+            if (CaptureOn)
+            {
+                FinalVideo.Stop();
+                CaptureOn = false;
+                btnPlayOrPause.Text = "Start";
+            }
+            else
+            {
+                if (VideoCaptureDevices.Count > 0)
+                {
+                    if (CaptureNotInitialized)
+                    {
+                        InitVideoCapture(4);
+                        CaptureOn = true;
+                        btnPlayOrPause.Text = "Pause";
+                    }
+                    else
+                    {
+                        FinalVideo.Start();
+                        CaptureOn = true;
+                        btnPlayOrPause.Text = "Pause";
+                    }
+                }
+            }
+
+        }
+
+        private void btnRefresh_Click(object sender, EventArgs e)
         {
             comboBox1.Items.Clear();
             comboBox1.Text = "";
             InitVideo();
-
         }
 
         Bitmap DetectedColor(Bitmap video)
@@ -134,6 +132,7 @@ namespace DigitRecognition
                     
            return video;
         }
+
         Bitmap DetectedToBinary(Bitmap video)
         {
             // color filter to rgb    
