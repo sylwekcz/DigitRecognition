@@ -36,9 +36,12 @@
             this.checkBoxMirror = new System.Windows.Forms.CheckBox();
             this.btnColorPick = new System.Windows.Forms.Button();
             this.btnRefresh = new System.Windows.Forms.Button();
+            this.pictureBox4 = new System.Windows.Forms.PictureBox();
+            this.lblXY = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             this.SuspendLayout();
             // 
             // btnPlayOrPause
@@ -77,7 +80,7 @@
             // 
             // pictureBox3
             // 
-            this.pictureBox3.Location = new System.Drawing.Point(351, 287);
+            this.pictureBox3.Location = new System.Drawing.Point(12, 305);
             this.pictureBox3.Name = "pictureBox3";
             this.pictureBox3.Size = new System.Drawing.Size(320, 240);
             this.pictureBox3.TabIndex = 4;
@@ -113,11 +116,30 @@
             this.btnRefresh.UseVisualStyleBackColor = true;
             this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
             // 
+            // pictureBox4
+            // 
+            this.pictureBox4.Location = new System.Drawing.Point(355, 305);
+            this.pictureBox4.Name = "pictureBox4";
+            this.pictureBox4.Size = new System.Drawing.Size(320, 240);
+            this.pictureBox4.TabIndex = 8;
+            this.pictureBox4.TabStop = false;
+            // 
+            // lblXY
+            // 
+            this.lblXY.AutoSize = true;
+            this.lblXY.Location = new System.Drawing.Point(12, 568);
+            this.lblXY.Name = "lblXY";
+            this.lblXY.Size = new System.Drawing.Size(63, 13);
+            this.lblXY.TabIndex = 9;
+            this.lblXY.Text = "Coordinates";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(687, 557);
+            this.ClientSize = new System.Drawing.Size(697, 590);
+            this.Controls.Add(this.lblXY);
+            this.Controls.Add(this.pictureBox4);
             this.Controls.Add(this.btnRefresh);
             this.Controls.Add(this.btnColorPick);
             this.Controls.Add(this.checkBoxMirror);
@@ -126,12 +148,16 @@
             this.Controls.Add(this.pictureBox2);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.btnPlayOrPause);
+            this.KeyPreview = true;
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "DigitRecognition";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
+            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyUp);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -147,6 +173,8 @@
         private System.Windows.Forms.CheckBox checkBoxMirror;
         private System.Windows.Forms.Button btnColorPick;
         private System.Windows.Forms.Button btnRefresh;
+        private System.Windows.Forms.PictureBox pictureBox4;
+        private System.Windows.Forms.Label lblXY;
     }
 }
 

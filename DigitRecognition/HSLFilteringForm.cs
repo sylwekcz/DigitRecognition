@@ -20,9 +20,12 @@ namespace DigitRecognition {
     public class HSLFilteringForm : System.Windows.Forms.Form
     {
         private HSLFiltering filter = new HSLFiltering( );
-        private IntRange hue = new IntRange( 0, 359 );
-        private Range saturation = new Range( 0, 1 );
-        private Range luminance = new Range( 0, 1 );
+        private IntRange hue = new IntRange( 78, 108 );
+        private Range saturation = new Range( 0.7f, 1 );
+        private Range luminance = new Range( 0.17f, 0.3f );
+        //  private IntRange hue = new IntRange(0, 359);
+        //  private Range saturation = new Range(0, 1);
+        //  private Range luminance = new Range(0, 1);
         private int fillH = 0;
         private float fillS = 0, fillL = 0;
 
@@ -82,6 +85,7 @@ namespace DigitRecognition {
             // Required for Windows Form Designer support
             //
             InitializeComponent( );
+
 
             //
             minHBox.Text = hue.Min.ToString( );
@@ -334,6 +338,7 @@ namespace DigitRecognition {
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "HSL Filtering";
+            this.Load += new System.EventHandler(this.HSLFilteringForm_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
@@ -473,7 +478,12 @@ namespace DigitRecognition {
 
             filter.FillColor = new HSL( fillH, fillS, fillL );
         }
-        
+
+        private void HSLFilteringForm_Load(object sender, EventArgs e)
+        {
+
+        }
+
         private void okButton_Click(object sender, EventArgs e)
         {
             Hide();
