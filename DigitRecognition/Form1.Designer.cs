@@ -37,7 +37,7 @@
             this.btnColorPick = new System.Windows.Forms.Button();
             this.btnRefresh = new System.Windows.Forms.Button();
             this.pictureBox4 = new System.Windows.Forms.PictureBox();
-            this.lblXY = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
@@ -64,6 +64,7 @@
             // 
             // pictureBox2
             // 
+            this.pictureBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureBox2.Location = new System.Drawing.Point(351, 41);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(320, 240);
@@ -80,6 +81,7 @@
             // 
             // pictureBox3
             // 
+            this.pictureBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.pictureBox3.Location = new System.Drawing.Point(12, 305);
             this.pictureBox3.Name = "pictureBox3";
             this.pictureBox3.Size = new System.Drawing.Size(320, 240);
@@ -88,8 +90,9 @@
             // 
             // checkBoxMirror
             // 
+            this.checkBoxMirror.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.checkBoxMirror.AutoSize = true;
-            this.checkBoxMirror.Location = new System.Drawing.Point(493, 16);
+            this.checkBoxMirror.Location = new System.Drawing.Point(537, 15);
             this.checkBoxMirror.Name = "checkBoxMirror";
             this.checkBoxMirror.Size = new System.Drawing.Size(52, 17);
             this.checkBoxMirror.TabIndex = 5;
@@ -98,6 +101,7 @@
             // 
             // btnColorPick
             // 
+            this.btnColorPick.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnColorPick.Location = new System.Drawing.Point(595, 12);
             this.btnColorPick.Name = "btnColorPick";
             this.btnColorPick.Size = new System.Drawing.Size(75, 23);
@@ -118,27 +122,29 @@
             // 
             // pictureBox4
             // 
-            this.pictureBox4.Location = new System.Drawing.Point(355, 305);
+            this.pictureBox4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictureBox4.Location = new System.Drawing.Point(350, 305);
             this.pictureBox4.Name = "pictureBox4";
             this.pictureBox4.Size = new System.Drawing.Size(320, 240);
             this.pictureBox4.TabIndex = 8;
             this.pictureBox4.TabStop = false;
             // 
-            // lblXY
+            // label1
             // 
-            this.lblXY.AutoSize = true;
-            this.lblXY.Location = new System.Drawing.Point(12, 568);
-            this.lblXY.Name = "lblXY";
-            this.lblXY.Size = new System.Drawing.Size(63, 13);
-            this.lblXY.TabIndex = 9;
-            this.lblXY.Text = "Coordinates";
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(348, 16);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(155, 13);
+            this.label1.TabIndex = 9;
+            this.label1.Text = "Draw (Hold X)  Delete (Press Z)";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(697, 590);
-            this.Controls.Add(this.lblXY);
+            this.ClientSize = new System.Drawing.Size(690, 563);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.pictureBox4);
             this.Controls.Add(this.btnRefresh);
             this.Controls.Add(this.btnColorPick);
@@ -149,6 +155,7 @@
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.btnPlayOrPause);
             this.KeyPreview = true;
+            this.MinimumSize = new System.Drawing.Size(706, 602);
             this.Name = "Form1";
             this.Text = "DigitRecognition";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
@@ -174,7 +181,7 @@
         private System.Windows.Forms.Button btnColorPick;
         private System.Windows.Forms.Button btnRefresh;
         private System.Windows.Forms.PictureBox pictureBox4;
-        private System.Windows.Forms.Label lblXY;
+        private System.Windows.Forms.Label label1;
     }
 }
 

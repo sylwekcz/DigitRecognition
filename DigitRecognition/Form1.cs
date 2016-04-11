@@ -16,10 +16,11 @@ namespace DigitRecognition
         private FilterInfoCollection VideoCaptureDevices;
         private VideoCaptureDevice FinalVideo;
         private HSLFilteringForm colorForm;
-        private bool CaptureNotInitialized = true;
-        private bool CaptureOn = false;
-        private bool DrawOn = false;
-        private Bitmap originalVideo, filteredVideo, binarizedVideo, outputImage = new Bitmap(320,240);
+        private bool captureNotInitialized = true;
+        private bool captureOn = false;
+        private bool drawOn = false;
+        private bool resetOutput = false;
+        private Bitmap originalVideo, filteredVideo, binarizedVideo, outputImage = new Bitmap(320, 240);
         private String coordinates;
         private IntPoint newPoint = new IntPoint(0, 0), oldPoint = new IntPoint(0, 0);
 
@@ -51,29 +52,28 @@ namespace DigitRecognition
                 FinalVideo.Stop();
             }
         }
-        
+
         private void FinalVideo_NewFrame(object sender, NewFrameEventArgs eventArgs)
         {
-            
+
             originalVideo = (Bitmap)eventArgs.Frame.Clone();
             if (checkBoxMirror.Checked)
             {   // mirror
                 mirrorFilter.ApplyInPlace(originalVideo);
-            }           
-
+            }
             // color filter
             filteredVideo = DetectedColor((Bitmap)originalVideo.Clone());
-            //binarize
+            // binarize
             binarizedVideo = DetectedToBinary((Bitmap)filteredVideo.Clone());
-            //biggest
+            // biggest
             blobs = LocalizeBlobs(binarizedVideo);
 
-            if (DrawOn) drawOutput(); else outputImage = new Bitmap(320, 240); 
-            
+            drawOutput(drawOn);
+
             pictureBox1.Image = originalVideo;
             pictureBox2.Image = filteredVideo;
             pictureBox3.Image = binarizedVideo;
-            pictureBox4.Image = outputImage;            
+            pictureBox4.Image = outputImage;
         }
 
         private void InitVideo()
@@ -86,17 +86,17 @@ namespace DigitRecognition
 
             if (VideoCaptureDevices.Count > 0)
             {
-                comboBox1.SelectedIndex = 0;                
+                comboBox1.SelectedIndex = 0;
             }
-            
+
         }
 
-        private void InitVideoCapture( int videoCameraResolutionMode)
+        private void InitVideoCapture(int videoCameraResolutionMode)
         {
             FinalVideo = new VideoCaptureDevice(VideoCaptureDevices[comboBox1.SelectedIndex].MonikerString);
             FinalVideo.VideoResolution = FinalVideo.VideoCapabilities[videoCameraResolutionMode];  // resolution
             FinalVideo.NewFrame += new NewFrameEventHandler(FinalVideo_NewFrame);
-            CaptureNotInitialized = false;
+            captureNotInitialized = false;
             FinalVideo.Start();
         }
 
@@ -108,41 +108,31 @@ namespace DigitRecognition
         private void btnPlayOrPause_Click(object sender, EventArgs e)
         {
 
-            if (CaptureOn)
+            if (captureOn)
             {
                 FinalVideo.Stop();
-                CaptureOn = false;
+                captureOn = false;
                 btnPlayOrPause.Text = "Start";
             }
             else
             {
                 if (VideoCaptureDevices.Count > 0)
                 {
-                    if (CaptureNotInitialized)
+                    if (captureNotInitialized)
                     {
                         InitVideoCapture(4);
-                        CaptureOn = true;
+                        captureOn = true;
                         btnPlayOrPause.Text = "Pause";
                     }
                     else
                     {
                         FinalVideo.Start();
-                        CaptureOn = true;
+                        captureOn = true;
                         btnPlayOrPause.Text = "Pause";
                     }
                 }
             }
 
-        }
-
-        private void Form1_KeyUp(object sender, KeyEventArgs e)
-        {
-            DrawOn = false; //no matter what key            
-        }
-
-        private void Form1_KeyDown(object sender, KeyEventArgs e)
-        {
-            DrawOn = true; //no matter what key  
         }
 
         private void btnRefresh_Click(object sender, EventArgs e)
@@ -152,13 +142,26 @@ namespace DigitRecognition
             InitVideo();
         }
 
+        private void Form1_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.X) drawOn = false;
+
+
+        }
+
+        private void Form1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.X) drawOn = true;
+            else if (e.KeyCode == Keys.Z) outputImage = new Bitmap(320, 240);
+        }
+
         private Bitmap DetectedColor(Bitmap video)
-        {            
-           hlsColorFilter = colorForm.Filter; 
-           //color filter
-           hlsColorFilter.ApplyInPlace(video);    
-                    
-           return video;
+        {
+            hlsColorFilter = colorForm.Filter;
+            //color filter
+            hlsColorFilter.ApplyInPlace(video);
+
+            return video;
         }
 
         private Bitmap DetectedToBinary(Bitmap video)
@@ -168,11 +171,11 @@ namespace DigitRecognition
             // binarize
             binarizeFilter.ApplyInPlace(video);
             // median filter noise reduction
-            medianFilter.ApplyInPlace(video);            
+            medianFilter.ApplyInPlace(video);
 
             return video;
         }
-              
+
         private Blob[] LocalizeBlobs(Bitmap binarizedInput)
         {
             bc.FilterBlobs = true;
@@ -180,22 +183,27 @@ namespace DigitRecognition
             bc.MinHeight = 5;
             bc.ObjectsOrder = ObjectsOrder.Size;
             bc.ProcessImage(binarizedInput);
-            return  bc.GetObjectsInformation();
-            
+            return bc.GetObjectsInformation();
+
         }
 
-        private void drawOutput()
+        private void drawOutput(bool active)
         {
             if (blobs != null && blobs.Length > 0)
             {
                 newPoint.X = (int)blobs[0].CenterOfGravity.X; newPoint.Y = (int)blobs[0].CenterOfGravity.Y;
-                BitmapData data = outputImage.LockBits(new Rectangle(0, 0, outputImage.Width, outputImage.Height), ImageLockMode.ReadWrite, outputImage.PixelFormat);
-                Drawing.Line(data, oldPoint, newPoint, Color.Black);
-                oldPoint = newPoint;
-                outputImage.UnlockBits(data);
+                if (active)
+                {
+                    BitmapData data = outputImage.LockBits(new Rectangle(0, 0, outputImage.Width, outputImage.Height), ImageLockMode.ReadWrite, outputImage.PixelFormat);
+                    Drawing.Line(data, oldPoint, newPoint, Color.Black);
+                    oldPoint.X = newPoint.X; oldPoint.Y = newPoint.Y;
+                    outputImage.UnlockBits(data);
+                }
+                oldPoint.X = newPoint.X; oldPoint.Y = newPoint.Y;
             }
+
         }
     }
 
-   
+
 }
