@@ -4,10 +4,14 @@ using AForge.Imaging;
 using AForge.Imaging.Filters;
 using AForge.Video;
 using AForge.Video.DirectShow;
+using Patagames.Ocr;
+using Patagames.Ocr.Enums;
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
+
+using System.Windows.Ink;
 
 namespace DigitRecognition
 {
@@ -145,7 +149,7 @@ namespace DigitRecognition
         private void Form1_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.X) drawOn = false;
-
+            ExtractTextFromBitmap();
 
         }
 
@@ -202,6 +206,16 @@ namespace DigitRecognition
                 oldPoint.X = newPoint.X; oldPoint.Y = newPoint.Y;
             }
 
+        }
+
+        public void ExtractTextFromBitmap()
+        {
+             using (var api = OcrApi.Create())
+             {
+                 api.Init(Languages.English);              
+                 string plainText = api.GetTextFromImage(outputImage);
+                 Console.WriteLine(plainText);
+             }
         }
     }
 
