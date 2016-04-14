@@ -21,8 +21,8 @@ namespace DigitRecognition {
     {
         private HSLFiltering filter = new HSLFiltering( );
         private IntRange hue = new IntRange( 70, 140 );
-        private Range saturation = new Range( 0.2f, 1 );
-        private Range luminance = new Range( 0.3f, 0.9f );
+        private Range saturation = new Range( 0.5f, 1 );
+        private Range luminance = new Range( 0.2f, 0.4f );
         //  private IntRange hue = new IntRange(0, 359);
         //  private Range saturation = new Range(0, 1);
         //  private Range luminance = new Range(0, 1);
@@ -460,10 +460,7 @@ namespace DigitRecognition {
             minLBox.Text = ( (double) luminanceSlider.Min / 255 ).ToString( "F3" );
             maxLBox.Text = ( (double) luminanceSlider.Max / 255 ).ToString( "F3" );
         }
-
-        
-
-       
+                     
 
         // Update fil color
         private void UpdateFillColor( )

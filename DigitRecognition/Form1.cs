@@ -23,13 +23,7 @@ namespace DigitRecognition
         private bool captureNotInitialized = true;
         private bool captureOn = false;
         private bool drawOn = false;
-#pragma warning disable CS0414 // The field 'Form1.resetOutput' is assigned but its value is never used
-        private bool resetOutput = false;
-#pragma warning restore CS0414 // The field 'Form1.resetOutput' is assigned but its value is never used
         private Bitmap originalVideo, filteredVideo, binarizedVideo, outputImage = new Bitmap(320, 240);
-#pragma warning disable CS0169 // The field 'Form1.coordinates' is never used
-        private String coordinates;
-#pragma warning restore CS0169 // The field 'Form1.coordinates' is never used
         private IntPoint newPoint = new IntPoint(0, 0), oldPoint = new IntPoint(0, 0);
 
         //filters
@@ -38,6 +32,7 @@ namespace DigitRecognition
         private Median medianFilter = new Median();
         private Threshold binarizeFilter = new Threshold(25);
         private Mirror mirrorFilter = new Mirror(false, true);
+        Dilatation dylatationFilter = new Dilatation();
         private ExtractBiggestBlob biggestBlobFilter = new ExtractBiggestBlob();
         private BlobCounterBase bc = new BlobCounter();
         private Blob[] blobs;
@@ -77,8 +72,11 @@ namespace DigitRecognition
             blobs = LocalizeBlobs(binarizedVideo);
 
             drawOutput(drawOn);
+            //dylatationFilter.ApplyInPlace(outputImage);
 
-            
+
+
+
             pictureBox1.Image = originalVideo;
             pictureBox2.Image = filteredVideo;
             pictureBox3.Image = binarizedVideo;
@@ -86,11 +84,10 @@ namespace DigitRecognition
             try
             {
                 pictureBox4.Image = outputImage;
-#pragma warning disable CS0168 // The variable 'ex' is declared but never used
-            } catch (Exception ex)
-#pragma warning restore CS0168 // The variable 'ex' is declared but never used
+            }
+            catch(Exception ex)
             {
-                Console.WriteLine("Za szybko!");
+                Console.WriteLine(ex.ToString());
             }
         }
 
@@ -213,7 +210,6 @@ namespace DigitRecognition
                 if (active)
                 {
                     BitmapData data = outputImage.LockBits(new Rectangle(0, 0, outputImage.Width, outputImage.Height), ImageLockMode.ReadWrite, outputImage.PixelFormat);
-                    
                     Drawing.Line(data, oldPoint, newPoint, Color.Black);
                     oldPoint.X = newPoint.X; oldPoint.Y = newPoint.Y;
                     outputImage.UnlockBits(data);
@@ -225,20 +221,48 @@ namespace DigitRecognition
 
         public void ExtractTextFromBitmap()
         {
-            if (checkBoxTesseract.Checked)
+            using (var api = OcrApi.Create())
             {
-                using (var api = OcrApi.Create())
-                {
-                    api.Init(Languages.English);
-                    string plainText = api.GetTextFromImage(outputImage);
-                    Console.WriteLine(plainText);
-                }
+                api.Init(Languages.English);
+                string plainText = api.GetTextFromImage(outputImage);
+                labelRecognized.Text = plainText;
             }
-                        
+        }  
 
 
         }
-    }
+
+    /*
+        void ConvertBitmapToFloatArray(Bitmap bmp)
+        {
+            float[,] data = new float[bmp.Width,bmp.Height];
+
+            for (int i = 0; i < bmp.Width; i++)
+            {
+                for (int j = 0; j < bmp.Height; j++)
+                {
+                    if (bmp.GetPixel(i, j) == Color.Black)
+                    {
+                        data[i, j] = 1;
+                    }
+
+                    else
+                    {
+                        
+                        data[i, j] = 0;
+                    }
+
+                    Console.Write(data[i, j]);
+                    
+                }
+                Console.WriteLine(); 
+            }            
+
+            //return data;
+        }}
+        */
+
+    
 
 
 }
