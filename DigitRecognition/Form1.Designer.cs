@@ -38,6 +38,7 @@
             this.btnRefresh = new System.Windows.Forms.Button();
             this.pictureBox4 = new System.Windows.Forms.PictureBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.checkBoxTesseract = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
@@ -65,7 +66,7 @@
             // pictureBox2
             // 
             this.pictureBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBox2.Location = new System.Drawing.Point(351, 41);
+            this.pictureBox2.Location = new System.Drawing.Point(376, 41);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(320, 240);
             this.pictureBox2.TabIndex = 2;
@@ -82,7 +83,7 @@
             // pictureBox3
             // 
             this.pictureBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.pictureBox3.Location = new System.Drawing.Point(12, 305);
+            this.pictureBox3.Location = new System.Drawing.Point(12, 330);
             this.pictureBox3.Name = "pictureBox3";
             this.pictureBox3.Size = new System.Drawing.Size(320, 240);
             this.pictureBox3.TabIndex = 4;
@@ -92,7 +93,9 @@
             // 
             this.checkBoxMirror.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.checkBoxMirror.AutoSize = true;
-            this.checkBoxMirror.Location = new System.Drawing.Point(537, 15);
+            this.checkBoxMirror.Checked = true;
+            this.checkBoxMirror.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxMirror.Location = new System.Drawing.Point(562, 15);
             this.checkBoxMirror.Name = "checkBoxMirror";
             this.checkBoxMirror.Size = new System.Drawing.Size(52, 17);
             this.checkBoxMirror.TabIndex = 5;
@@ -102,7 +105,7 @@
             // btnColorPick
             // 
             this.btnColorPick.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnColorPick.Location = new System.Drawing.Point(595, 12);
+            this.btnColorPick.Location = new System.Drawing.Point(620, 12);
             this.btnColorPick.Name = "btnColorPick";
             this.btnColorPick.Size = new System.Drawing.Size(75, 23);
             this.btnColorPick.TabIndex = 6;
@@ -123,7 +126,7 @@
             // pictureBox4
             // 
             this.pictureBox4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBox4.Location = new System.Drawing.Point(350, 305);
+            this.pictureBox4.Location = new System.Drawing.Point(375, 330);
             this.pictureBox4.Name = "pictureBox4";
             this.pictureBox4.Size = new System.Drawing.Size(320, 240);
             this.pictureBox4.TabIndex = 8;
@@ -133,17 +136,28 @@
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(348, 16);
+            this.label1.Location = new System.Drawing.Point(373, 16);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(155, 13);
             this.label1.TabIndex = 9;
             this.label1.Text = "Draw (Hold X)  Delete (Press Z)";
             // 
+            // checkBoxTesseract
+            // 
+            this.checkBoxTesseract.AutoSize = true;
+            this.checkBoxTesseract.Location = new System.Drawing.Point(376, 299);
+            this.checkBoxTesseract.Name = "checkBoxTesseract";
+            this.checkBoxTesseract.Size = new System.Drawing.Size(69, 17);
+            this.checkBoxTesseract.TabIndex = 10;
+            this.checkBoxTesseract.Text = "tesseract";
+            this.checkBoxTesseract.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(690, 563);
+            this.ClientSize = new System.Drawing.Size(715, 588);
+            this.Controls.Add(this.checkBoxTesseract);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.pictureBox4);
             this.Controls.Add(this.btnRefresh);
@@ -182,6 +196,7 @@
         private System.Windows.Forms.Button btnRefresh;
         private System.Windows.Forms.PictureBox pictureBox4;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.CheckBox checkBoxTesseract;
     }
 }
 

@@ -20,9 +20,9 @@ namespace DigitRecognition {
     public class HSLFilteringForm : System.Windows.Forms.Form
     {
         private HSLFiltering filter = new HSLFiltering( );
-        private IntRange hue = new IntRange( 78, 108 );
-        private Range saturation = new Range( 0.7f, 1 );
-        private Range luminance = new Range( 0.17f, 0.3f );
+        private IntRange hue = new IntRange( 70, 140 );
+        private Range saturation = new Range( 0.2f, 1 );
+        private Range luminance = new Range( 0.3f, 0.9f );
         //  private IntRange hue = new IntRange(0, 359);
         //  private Range saturation = new Range(0, 1);
         //  private Range luminance = new Range(0, 1);

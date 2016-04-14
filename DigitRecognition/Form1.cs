@@ -23,9 +23,13 @@ namespace DigitRecognition
         private bool captureNotInitialized = true;
         private bool captureOn = false;
         private bool drawOn = false;
+#pragma warning disable CS0414 // The field 'Form1.resetOutput' is assigned but its value is never used
         private bool resetOutput = false;
+#pragma warning restore CS0414 // The field 'Form1.resetOutput' is assigned but its value is never used
         private Bitmap originalVideo, filteredVideo, binarizedVideo, outputImage = new Bitmap(320, 240);
+#pragma warning disable CS0169 // The field 'Form1.coordinates' is never used
         private String coordinates;
+#pragma warning restore CS0169 // The field 'Form1.coordinates' is never used
         private IntPoint newPoint = new IntPoint(0, 0), oldPoint = new IntPoint(0, 0);
 
         //filters
@@ -74,10 +78,20 @@ namespace DigitRecognition
 
             drawOutput(drawOn);
 
+            
             pictureBox1.Image = originalVideo;
             pictureBox2.Image = filteredVideo;
             pictureBox3.Image = binarizedVideo;
-            pictureBox4.Image = outputImage;
+
+            try
+            {
+                pictureBox4.Image = outputImage;
+#pragma warning disable CS0168 // The variable 'ex' is declared but never used
+            } catch (Exception ex)
+#pragma warning restore CS0168 // The variable 'ex' is declared but never used
+            {
+                Console.WriteLine("Za szybko!");
+            }
         }
 
         private void InitVideo()
@@ -183,8 +197,8 @@ namespace DigitRecognition
         private Blob[] LocalizeBlobs(Bitmap binarizedInput)
         {
             bc.FilterBlobs = true;
-            bc.MinWidth = 5;
-            bc.MinHeight = 5;
+            bc.MinWidth = 15;
+            bc.MinHeight = 15;
             bc.ObjectsOrder = ObjectsOrder.Size;
             bc.ProcessImage(binarizedInput);
             return bc.GetObjectsInformation();
@@ -199,6 +213,7 @@ namespace DigitRecognition
                 if (active)
                 {
                     BitmapData data = outputImage.LockBits(new Rectangle(0, 0, outputImage.Width, outputImage.Height), ImageLockMode.ReadWrite, outputImage.PixelFormat);
+                    
                     Drawing.Line(data, oldPoint, newPoint, Color.Black);
                     oldPoint.X = newPoint.X; oldPoint.Y = newPoint.Y;
                     outputImage.UnlockBits(data);
@@ -210,12 +225,18 @@ namespace DigitRecognition
 
         public void ExtractTextFromBitmap()
         {
-             using (var api = OcrApi.Create())
-             {
-                 api.Init(Languages.English);              
-                 string plainText = api.GetTextFromImage(outputImage);
-                 Console.WriteLine(plainText);
-             }
+            if (checkBoxTesseract.Checked)
+            {
+                using (var api = OcrApi.Create())
+                {
+                    api.Init(Languages.English);
+                    string plainText = api.GetTextFromImage(outputImage);
+                    Console.WriteLine(plainText);
+                }
+            }
+                        
+
+
         }
     }
 
