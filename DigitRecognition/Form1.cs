@@ -1,4 +1,5 @@
 ﻿
+using Accord.MachineLearning;
 using AForge;
 using AForge.Imaging;
 using AForge.Imaging.Filters;
@@ -7,15 +8,18 @@ using AForge.Video.DirectShow;
 using Patagames.Ocr;
 using Patagames.Ocr.Enums;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
+using System.Xml.Serialization;
 
 namespace DigitRecognition
 {
     public partial class Form1 : Form
     {
-        private FilterInfoCollection VideoCaptureDevices;
-        private VideoCaptureDevice FinalVideo;
+        private FilterInfoCollection videoCaptureDevices;
+        private VideoCaptureDevice finalVideo;
         private HSLFilteringForm colorForm;
         private bool captureNotInitialized = true;
         private bool captureOn = false;
@@ -34,21 +38,29 @@ namespace DigitRecognition
         private BlobCounterBase bc = new BlobCounter();
         private Blob[] blobs;
 
+        private List<double[]> patterns = new List<double[]>();
+        private List<int> patternsClasses = new List<int>();
+        private int classesCount=0;
+        
+       
+
         public Form1()
         {
             InitializeComponent();
             {
                 InitVideo();
                 colorForm = new HSLFilteringForm();
+
             }
+            
 
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (FinalVideo != null)
+            if (finalVideo != null)
             {
-                FinalVideo.Stop();
+                finalVideo.Stop();
             }
         }
 
@@ -86,13 +98,13 @@ namespace DigitRecognition
 
         private void InitVideo()
         {
-            VideoCaptureDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
-            foreach (FilterInfo VideoCaptureDevice in VideoCaptureDevices)
+            videoCaptureDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
+            foreach (FilterInfo VideoCaptureDevice in videoCaptureDevices)
             {
                 comboBox1.Items.Add(VideoCaptureDevice.Name);
             }
 
-            if (VideoCaptureDevices.Count > 0)
+            if (videoCaptureDevices.Count > 0)
             {
                 comboBox1.SelectedIndex = 0;
             }
@@ -101,11 +113,11 @@ namespace DigitRecognition
 
         private void InitVideoCapture(int videoCameraResolutionMode)
         {
-            FinalVideo = new VideoCaptureDevice(VideoCaptureDevices[comboBox1.SelectedIndex].MonikerString);
-            FinalVideo.VideoResolution = FinalVideo.VideoCapabilities[videoCameraResolutionMode];  // resolution
-            FinalVideo.NewFrame += new NewFrameEventHandler(FinalVideo_NewFrame);
+            finalVideo = new VideoCaptureDevice(videoCaptureDevices[comboBox1.SelectedIndex].MonikerString);
+            finalVideo.VideoResolution = finalVideo.VideoCapabilities[videoCameraResolutionMode];  // resolution
+            finalVideo.NewFrame += new NewFrameEventHandler(FinalVideo_NewFrame);
             captureNotInitialized = false;
-            FinalVideo.Start();
+            finalVideo.Start();
         }
 
         private void buttonColorPick_Click(object sender, EventArgs e)
@@ -118,13 +130,13 @@ namespace DigitRecognition
 
             if (captureOn)
             {
-                FinalVideo.Stop();
+                finalVideo.Stop();
                 captureOn = false;
                 btnPlayOrPause.Text = "Start";
             }
             else
             {
-                if (VideoCaptureDevices.Count > 0)
+                if (videoCaptureDevices.Count > 0)
                 {
                     if (captureNotInitialized)
                     {
@@ -134,7 +146,7 @@ namespace DigitRecognition
                     }
                     else
                     {
-                        FinalVideo.Start();
+                        finalVideo.Start();
                         captureOn = true;
                         btnPlayOrPause.Text = "Pause";
                     }
@@ -152,9 +164,14 @@ namespace DigitRecognition
 
         private void Form1_KeyUp(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.X) drawOn = false;
-            ExtractTextFromBitmap();
-            ExtractData(knnImage);
+            if (e.KeyCode == Keys.X)
+            {
+                drawOn = false;
+                ExtractTextFromBitmap();
+                ExtractTextFromBitmapCustom();
+
+            }
+            
         }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
@@ -170,6 +187,18 @@ namespace DigitRecognition
             hlsColorFilter.ApplyInPlace(video);
 
             return video;
+        }
+
+        private void btnPattern_Click(object sender, EventArgs e)
+        {
+            patterns.Add(ExtractData(knnImage));
+            patternsClasses.Add(int.Parse(txtPattern.Text));
+            WriteToXmlFile("patterns.xml", patterns);
+            WriteToXmlFile("patternsClasses.xml", patternsClasses);
+            classesCount = CountClasses(patternsClasses);
+            Console.WriteLine(classesCount);
+
+
         }
 
         private Bitmap DetectedToBinary(Bitmap video)
@@ -192,6 +221,24 @@ namespace DigitRecognition
             bc.ObjectsOrder = ObjectsOrder.Size;
             bc.ProcessImage(binarizedInput);
             return bc.GetObjectsInformation();
+        }
+
+        private void btnLoad_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                patterns = ReadFromXmlFile<List<double[]>>("patterns.xml");
+                patternsClasses = ReadFromXmlFile<List<int>>("patternsClasses");
+
+            }
+            catch
+            {
+                MessageBox.Show("File not found, or empty!");
+            }
+
+            classesCount = CountClasses(patternsClasses);
+            Console.WriteLine(classesCount);
+
         }
 
         private void drawOutput(bool active)
@@ -219,7 +266,7 @@ namespace DigitRecognition
                 oldPoint.X = newPoint.X; oldPoint.Y = newPoint.Y;
             }
 
-        }
+        }        
 
         public void ExtractTextFromBitmap()
         {
@@ -232,6 +279,17 @@ namespace DigitRecognition
             }
         }
 
+        public void ExtractTextFromBitmapCustom()
+        {
+            if (patterns.Count > 0)
+            {
+
+                KNearestNeighbors knn = new KNearestNeighbors(k: 4, classes: classesCount, inputs: patterns.ToArray(), outputs: patternsClasses.ToArray());
+
+                int answer = knn.Compute(ExtractData(knnImage)); // 2
+                lblWeRecognized.Text = ""+answer;
+            }
+        }
 
         public double[] ExtractData(Bitmap bmp)
         {
@@ -248,6 +306,58 @@ namespace DigitRecognition
 
             }
             return data;
+        }       
+
+        public static void WriteToXmlFile<T>(string filePath, T objectToWrite, bool append = false) where T : new()
+        {
+            TextWriter writer = null;
+            try
+            {
+                var serializer = new XmlSerializer(typeof(T));
+                writer = new StreamWriter(filePath, append);
+                serializer.Serialize(writer, objectToWrite);
+            }
+            finally
+            {
+                if (writer != null)
+                    writer.Close();
+            }
+        }
+
+        public static T ReadFromXmlFile<T>(string filePath) where T : new()
+        {
+            TextReader reader = null;
+            try
+            {
+                var serializer = new XmlSerializer(typeof(T));
+                reader = new StreamReader(filePath);
+                return (T)serializer.Deserialize(reader);
+            }
+            finally
+            {
+                if (reader != null)
+                    reader.Close();
+            }
+        }
+
+        public static int CountClasses(List<int> classPattern)
+        {
+            List<int> temp = new List<int>(classPattern);
+            temp.Sort();
+
+            int tmpClassesCount = 0;
+            int x = -1;
+            foreach (int a in temp)
+            {
+                if (a != x)
+                {
+                    tmpClassesCount++;
+                    x = a;
+                }
+
+            }
+
+            return tmpClassesCount;
         }
 
     }

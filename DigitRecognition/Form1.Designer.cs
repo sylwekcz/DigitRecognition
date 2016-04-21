@@ -40,6 +40,11 @@
             this.label1 = new System.Windows.Forms.Label();
             this.labelRecognized = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
+            this.btnPattern = new System.Windows.Forms.Button();
+            this.txtPattern = new System.Windows.Forms.TextBox();
+            this.btnLoad = new System.Windows.Forms.Button();
+            this.label2 = new System.Windows.Forms.Label();
+            this.lblWeRecognized = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
@@ -67,7 +72,7 @@
             // pictureBox2
             // 
             this.pictureBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBox2.Location = new System.Drawing.Point(393, 41);
+            this.pictureBox2.Location = new System.Drawing.Point(372, 41);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(320, 240);
             this.pictureBox2.TabIndex = 2;
@@ -84,7 +89,7 @@
             // pictureBox3
             // 
             this.pictureBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.pictureBox3.Location = new System.Drawing.Point(12, 336);
+            this.pictureBox3.Location = new System.Drawing.Point(12, 299);
             this.pictureBox3.Name = "pictureBox3";
             this.pictureBox3.Size = new System.Drawing.Size(320, 240);
             this.pictureBox3.TabIndex = 4;
@@ -96,7 +101,7 @@
             this.checkBoxMirror.AutoSize = true;
             this.checkBoxMirror.Checked = true;
             this.checkBoxMirror.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxMirror.Location = new System.Drawing.Point(579, 15);
+            this.checkBoxMirror.Location = new System.Drawing.Point(558, 15);
             this.checkBoxMirror.Name = "checkBoxMirror";
             this.checkBoxMirror.Size = new System.Drawing.Size(52, 17);
             this.checkBoxMirror.TabIndex = 5;
@@ -106,7 +111,7 @@
             // btnColorPick
             // 
             this.btnColorPick.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnColorPick.Location = new System.Drawing.Point(637, 12);
+            this.btnColorPick.Location = new System.Drawing.Point(616, 12);
             this.btnColorPick.Name = "btnColorPick";
             this.btnColorPick.Size = new System.Drawing.Size(75, 23);
             this.btnColorPick.TabIndex = 6;
@@ -127,7 +132,7 @@
             // pictureBox4
             // 
             this.pictureBox4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBox4.Location = new System.Drawing.Point(393, 336);
+            this.pictureBox4.Location = new System.Drawing.Point(372, 299);
             this.pictureBox4.Name = "pictureBox4";
             this.pictureBox4.Size = new System.Drawing.Size(320, 240);
             this.pictureBox4.TabIndex = 8;
@@ -137,7 +142,7 @@
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(390, 16);
+            this.label1.Location = new System.Drawing.Point(369, 16);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(155, 13);
             this.label1.TabIndex = 9;
@@ -147,7 +152,7 @@
             // 
             this.labelRecognized.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.labelRecognized.AutoSize = true;
-            this.labelRecognized.Location = new System.Drawing.Point(685, 595);
+            this.labelRecognized.Location = new System.Drawing.Point(664, 558);
             this.labelRecognized.Name = "labelRecognized";
             this.labelRecognized.Size = new System.Drawing.Size(0, 13);
             this.labelRecognized.TabIndex = 11;
@@ -156,17 +161,70 @@
             // 
             this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(516, 595);
+            this.label3.Location = new System.Drawing.Point(555, 558);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(81, 13);
             this.label3.TabIndex = 12;
             this.label3.Text = "Recognized as:";
             // 
+            // btnPattern
+            // 
+            this.btnPattern.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnPattern.Location = new System.Drawing.Point(12, 547);
+            this.btnPattern.Name = "btnPattern";
+            this.btnPattern.Size = new System.Drawing.Size(75, 23);
+            this.btnPattern.TabIndex = 13;
+            this.btnPattern.Text = "SavePattern";
+            this.btnPattern.UseVisualStyleBackColor = true;
+            this.btnPattern.Click += new System.EventHandler(this.btnPattern_Click);
+            // 
+            // txtPattern
+            // 
+            this.txtPattern.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.txtPattern.Location = new System.Drawing.Point(94, 549);
+            this.txtPattern.Name = "txtPattern";
+            this.txtPattern.Size = new System.Drawing.Size(100, 20);
+            this.txtPattern.TabIndex = 14;
+            // 
+            // btnLoad
+            // 
+            this.btnLoad.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnLoad.Location = new System.Drawing.Point(201, 546);
+            this.btnLoad.Name = "btnLoad";
+            this.btnLoad.Size = new System.Drawing.Size(88, 23);
+            this.btnLoad.TabIndex = 15;
+            this.btnLoad.Text = "LoadPatterns";
+            this.btnLoad.UseVisualStyleBackColor = true;
+            // 
+            // label2
+            // 
+            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(369, 558);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(96, 13);
+            this.label2.TabIndex = 17;
+            this.label2.Text = "We recognized as:";
+            // 
+            // lblWeRecognized
+            // 
+            this.lblWeRecognized.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblWeRecognized.AutoSize = true;
+            this.lblWeRecognized.Location = new System.Drawing.Point(478, 558);
+            this.lblWeRecognized.Name = "lblWeRecognized";
+            this.lblWeRecognized.Size = new System.Drawing.Size(0, 13);
+            this.lblWeRecognized.TabIndex = 16;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(732, 620);
+            this.ClientSize = new System.Drawing.Size(711, 583);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.lblWeRecognized);
+            this.Controls.Add(this.btnLoad);
+            this.Controls.Add(this.txtPattern);
+            this.Controls.Add(this.btnPattern);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.labelRecognized);
             this.Controls.Add(this.label1);
@@ -209,6 +267,11 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label labelRecognized;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Button btnPattern;
+        private System.Windows.Forms.TextBox txtPattern;
+        private System.Windows.Forms.Button btnLoad;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label lblWeRecognized;
     }
 }
 
