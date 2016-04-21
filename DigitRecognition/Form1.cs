@@ -23,7 +23,7 @@ namespace DigitRecognition
         private bool captureNotInitialized = true;
         private bool captureOn = false;
         private bool drawOn = false;
-        private Bitmap originalVideo, filteredVideo, binarizedVideo, outputImage = new Bitmap(320, 240), cursorimage = new Bitmap(320, 240);
+        private Bitmap originalVideo, filteredVideo, binarizedVideo, outputImage = new Bitmap(320, 240), knnImage = new Bitmap(320, 240);
         private IntPoint newPoint = new IntPoint(0, 0), oldPoint = new IntPoint(0, 0);
 
         //filters
@@ -72,7 +72,7 @@ namespace DigitRecognition
             blobs = LocalizeBlobs(binarizedVideo);
 
             drawOutput(drawOn);
-            //dylatationFilter.ApplyInPlace(outputImage);
+            // dylatationFilter.ApplyInPlace(outputImage);
 
 
 
@@ -161,7 +161,10 @@ namespace DigitRecognition
         {
             if (e.KeyCode == Keys.X) drawOn = false;
             ExtractTextFromBitmap();
-            ExtractData(outputImage);
+            ExtractData(knnImage);
+
+
+
 
         }
 
@@ -223,6 +226,7 @@ namespace DigitRecognition
                         graphics.DrawLine(blackPen, newPoint.X, newPoint.Y, oldPoint.X, oldPoint.Y);
                     }
 
+                    knnImage = (Bitmap)outputImage.Clone();
                 }
                 oldPoint.X = newPoint.X; oldPoint.Y = newPoint.Y;
             }
@@ -241,13 +245,20 @@ namespace DigitRecognition
         }
 
 
-        public static double[] ExtractData(Bitmap bmp)
+        public double[] ExtractData(Bitmap bmp)
         {
             double[] data = new double[bmp.Width * bmp.Height];
-            for (int i = 0; i < bmp.Height; i++)
-                for (int j = 0; j < bmp.Width; j++)
-                    data[i * bmp.Width + j] = (bmp.GetPixel(j, i).R == 255) ? 0 : 1;
 
+            for (int i = 0; i < bmp.Height; i++)
+            {
+                for (int j = 0; j < bmp.Width; j++)
+                {
+                    // wyszlo z debugowania ze jak nie ma to Name = "0" a jak jest to "ff00000" 
+                    data[i * bmp.Width + j] = (bmp.GetPixel(j, i).Name == "ff000000") ? 1 : 0;
+                    
+                }
+               
+            }
             return data;
         }
         
