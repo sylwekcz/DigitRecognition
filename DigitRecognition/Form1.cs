@@ -23,7 +23,7 @@ namespace DigitRecognition
         private bool captureNotInitialized = true;
         private bool captureOn = false;
         private bool drawOn = false;
-        private Bitmap originalVideo, filteredVideo, binarizedVideo, outputImage = new Bitmap(320, 240);
+        private Bitmap originalVideo, filteredVideo, binarizedVideo, outputImage = new Bitmap(320, 240), cursorimage = new Bitmap(320, 240);
         private IntPoint newPoint = new IntPoint(0, 0), oldPoint = new IntPoint(0, 0);
 
         //filters
@@ -85,7 +85,7 @@ namespace DigitRecognition
             {
                 pictureBox4.Image = outputImage;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());
             }
@@ -161,6 +161,7 @@ namespace DigitRecognition
         {
             if (e.KeyCode == Keys.X) drawOn = false;
             ExtractTextFromBitmap();
+            ExtractData(outputImage);
 
         }
 
@@ -204,15 +205,24 @@ namespace DigitRecognition
 
         private void drawOutput(bool active)
         {
+
             if (blobs != null && blobs.Length > 0)
             {
                 newPoint.X = (int)blobs[0].CenterOfGravity.X; newPoint.Y = (int)blobs[0].CenterOfGravity.Y;
                 if (active)
                 {
-                    BitmapData data = outputImage.LockBits(new Rectangle(0, 0, outputImage.Width, outputImage.Height), ImageLockMode.ReadWrite, outputImage.PixelFormat);
-                    Drawing.Line(data, oldPoint, newPoint, Color.Black);
-                    oldPoint.X = newPoint.X; oldPoint.Y = newPoint.Y;
-                    outputImage.UnlockBits(data);
+                    // BitmapData data = outputImage.LockBits(new Rectangle(0, 0, outputImage.Width, outputImage.Height), ImageLockMode.ReadWrite, outputImage.PixelFormat);
+                    // Drawing.Line(data, oldPoint, newPoint, Color.Black);
+                    // oldPoint.X = newPoint.X; oldPoint.Y = newPoint.Y;
+                    // outputImage.UnlockBits(data);
+
+
+                    Pen blackPen = new Pen(Color.Black, 7);
+                    using (var graphics = Graphics.FromImage(outputImage))
+                    {
+                        graphics.DrawLine(blackPen, newPoint.X, newPoint.Y, oldPoint.X, oldPoint.Y);
+                    }
+
                 }
                 oldPoint.X = newPoint.X; oldPoint.Y = newPoint.Y;
             }
@@ -224,45 +234,22 @@ namespace DigitRecognition
             using (var api = OcrApi.Create())
             {
                 api.Init(Languages.English);
+                api.SetVariable("tessedit_char_whitelist", "0123456789");
                 string plainText = api.GetTextFromImage(outputImage);
                 labelRecognized.Text = plainText;
             }
-        }  
-
-
         }
 
-    /*
-        void ConvertBitmapToFloatArray(Bitmap bmp)
+
+        public static double[] ExtractData(Bitmap bmp)
         {
-            float[,] data = new float[bmp.Width,bmp.Height];
+            double[] data = new double[bmp.Width * bmp.Height];
+            for (int i = 0; i < bmp.Height; i++)
+                for (int j = 0; j < bmp.Width; j++)
+                    data[i * bmp.Width + j] = (bmp.GetPixel(j, i).R == 255) ? 0 : 1;
 
-            for (int i = 0; i < bmp.Width; i++)
-            {
-                for (int j = 0; j < bmp.Height; j++)
-                {
-                    if (bmp.GetPixel(i, j) == Color.Black)
-                    {
-                        data[i, j] = 1;
-                    }
-
-                    else
-                    {
-                        
-                        data[i, j] = 0;
-                    }
-
-                    Console.Write(data[i, j]);
-                    
-                }
-                Console.WriteLine(); 
-            }            
-
-            //return data;
-        }}
-        */
-
-    
-
-
+            return data;
+        }
+        
+    }
 }
