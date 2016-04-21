@@ -8,10 +8,7 @@ using Patagames.Ocr;
 using Patagames.Ocr.Enums;
 using System;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.Windows.Forms;
-
-using System.Windows.Ink;
 
 namespace DigitRecognition
 {
@@ -43,7 +40,6 @@ namespace DigitRecognition
             {
                 InitVideo();
                 colorForm = new HSLFilteringForm();
-
             }
 
         }
@@ -73,9 +69,6 @@ namespace DigitRecognition
 
             drawOutput(drawOn);
             // dylatationFilter.ApplyInPlace(outputImage);
-
-
-
 
             pictureBox1.Image = originalVideo;
             pictureBox2.Image = filteredVideo;
@@ -162,10 +155,6 @@ namespace DigitRecognition
             if (e.KeyCode == Keys.X) drawOn = false;
             ExtractTextFromBitmap();
             ExtractData(knnImage);
-
-
-
-
         }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
@@ -203,7 +192,6 @@ namespace DigitRecognition
             bc.ObjectsOrder = ObjectsOrder.Size;
             bc.ProcessImage(binarizedInput);
             return bc.GetObjectsInformation();
-
         }
 
         private void drawOutput(bool active)
@@ -255,12 +243,12 @@ namespace DigitRecognition
                 {
                     // wyszlo z debugowania ze jak nie ma to Name = "0" a jak jest to "ff00000" 
                     data[i * bmp.Width + j] = (bmp.GetPixel(j, i).Name == "ff000000") ? 1 : 0;
-                    
+
                 }
-               
+
             }
             return data;
         }
-        
+
     }
 }
