@@ -1,15 +1,10 @@
-﻿using Accord.MachineLearning;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Windows.Forms;
 
 namespace DigitRecognition
 {
     static class Program
     {
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
         [STAThread]
         static void Main()
         {
