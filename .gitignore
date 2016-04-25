@@ -10,6 +10,8 @@
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
+
+
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
@@ -21,6 +23,8 @@
 bld/
 [Bb]in/
 [Oo]bj/
+
+tessdata/
 
 # Visual Studio 2015 cache/options directory
 .vs/
@@ -225,6 +229,8 @@ FakesAssemblies/
 
 # Visual Studio 6 workspace options file
 *.opt
+
+
 
 # Visual Studio LightSwitch build output
 **/*.HTMLClient/GeneratedArtifacts
