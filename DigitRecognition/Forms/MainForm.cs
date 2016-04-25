@@ -53,8 +53,16 @@ namespace DigitRecognition
 
             pictureBox1.Image = originalVideo;
             pictureBox2.Image = filteredVideo;
-            pictureBox3.Image = binarizedVideo;            
-            pictureBox4.Image = outputImage;
+            pictureBox3.Image = binarizedVideo;
+
+            try
+            {
+                pictureBox4.Image = outputImage;
+
+            } catch
+            {
+
+            }
             
         }      
 
