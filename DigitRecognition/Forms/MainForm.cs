@@ -99,6 +99,7 @@ namespace DigitRecognition
 
         private void InitVideoCapture(int videoCameraResolutionMode)
         {
+            InitVideo();
             FinalVideo = new VideoCaptureDevice(VideoCaptureDevices[comboBox1.SelectedIndex].MonikerString);
             FinalVideo.VideoResolution = FinalVideo.VideoCapabilities[videoCameraResolutionMode];  // resolution
             FinalVideo.NewFrame += new NewFrameEventHandler(FinalVideo_NewFrame);
@@ -149,7 +150,7 @@ namespace DigitRecognition
             InitVideo();
         }
 
-        
+
 
         private void drawOutput()
         {
@@ -169,7 +170,7 @@ namespace DigitRecognition
 
                         counter = 0;
                     }
-                    if (counter >= 150 && active == true) //5s
+                    if (counter >= 150 && active == true  )  //5s
                     {
                         active = false;
                         reader.SpeakAsync("Drawing has ended");
@@ -181,7 +182,7 @@ namespace DigitRecognition
                 else counter = 0;
                 if (active)
                 {
-                    
+
                     Pen blackPen = new Pen(Color.Black, 7);
                     using (var graphics = Graphics.FromImage(outputImage))
                     {
@@ -190,6 +191,14 @@ namespace DigitRecognition
 
                 }
                 oldPoint.X = newPoint.X; oldPoint.Y = newPoint.Y;
+            } else if (active)
+            {
+                
+                    active = false;
+                    reader.SpeakAsync("Drawing has ended");
+                    ExtractTextFromBitmap();
+                    counter = 0;
+                
             }
 
         }
@@ -222,6 +231,7 @@ namespace DigitRecognition
                 //string toSpeech = "Rozpoznana cyfra to " + plainText;
                 string toSpeech = "Recognized digit is " + plainText;
                 reader.SpeakAsync(toSpeech);
+                tell = false;
             }
             else
             {
@@ -230,6 +240,6 @@ namespace DigitRecognition
                 reader.SpeakAsync("Not recognized. Try again!");
 
             }
-        }      
+        }
     }
 }
