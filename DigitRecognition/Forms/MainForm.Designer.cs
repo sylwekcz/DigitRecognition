@@ -26,9 +26,6 @@
             this.btnColorPick = new System.Windows.Forms.Button();
             this.btnRefresh = new System.Windows.Forms.Button();
             this.pictureBox4 = new System.Windows.Forms.PictureBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.labelRecognized = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
@@ -122,43 +119,11 @@
             this.pictureBox4.TabIndex = 8;
             this.pictureBox4.TabStop = false;
             // 
-            // label1
-            // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(369, 16);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(155, 13);
-            this.label1.TabIndex = 9;
-            this.label1.Text = "Draw (Hold X)  Delete (Press Z)";
-            // 
-            // labelRecognized
-            // 
-            this.labelRecognized.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.labelRecognized.AutoSize = true;
-            this.labelRecognized.Location = new System.Drawing.Point(664, 558);
-            this.labelRecognized.Name = "labelRecognized";
-            this.labelRecognized.Size = new System.Drawing.Size(0, 13);
-            this.labelRecognized.TabIndex = 11;
-            // 
-            // label3
-            // 
-            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(555, 558);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(81, 13);
-            this.label3.TabIndex = 12;
-            this.label3.Text = "Recognized as:";
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(711, 583);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.labelRecognized);
-            this.Controls.Add(this.label1);
             this.Controls.Add(this.pictureBox4);
             this.Controls.Add(this.btnRefresh);
             this.Controls.Add(this.btnColorPick);
@@ -173,8 +138,6 @@
             this.Name = "Form1";
             this.Text = "DigitRecognition";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
-            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyUp);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
@@ -195,9 +158,6 @@
         private System.Windows.Forms.Button btnColorPick;
         private System.Windows.Forms.Button btnRefresh;
         private System.Windows.Forms.PictureBox pictureBox4;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label labelRecognized;
-        private System.Windows.Forms.Label label3;
     }
 }
 

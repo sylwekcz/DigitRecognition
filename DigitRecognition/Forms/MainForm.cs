@@ -1,6 +1,6 @@
-﻿
-using AForge;
+﻿using AForge;
 using AForge.Imaging;
+using AForge.Imaging.Filters;
 using AForge.Video;
 using AForge.Video.DirectShow;
 using Patagames.Ocr;
@@ -8,48 +8,65 @@ using Patagames.Ocr.Enums;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Speech.Synthesis;
+
+
 
 namespace DigitRecognition
 {
     public partial class Form1 : Form
     {
-        private VideoCaptureDevice videoInput;
-        private FilterInfoCollection videoCaptureDevices;        
-        private Filters filters = new Filters();
+        private FilterInfoCollection VideoCaptureDevices;
+        private VideoCaptureDevice FinalVideo;
         private HSLFilteringForm colorForm;
-        private bool videoCaptureInitialized = false, videoCaptureInProgress = false, drawOn = false;
-
+        private bool captureInitialized = false;
+        private bool capture = false;
+        private bool active = false;
         private Bitmap originalVideo, filteredVideo, binarizedVideo, outputImage = new Bitmap(320, 240);
         private IntPoint newPoint = new IntPoint(0, 0), oldPoint = new IntPoint(0, 0);
         private Blob[] blobs;
-        
-        
+        private Filters Filters = new Filters();
+
+        //speech
+        private SpeechSynthesizer reader;
+        private int counter = 0;
+        private int[] DigitTable = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+        ResizeBicubic resizeFilter = new ResizeBicubic(320, 240);
+
+
+
+
         public Form1()
         {
             InitializeComponent();
             {
-                GetVideoDevices();
+                InitVideo();
                 colorForm = new HSLFilteringForm();
-            }          
+                reader = new SpeechSynthesizer();
+            }
+
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (videoInput != null)
+            if (FinalVideo != null)
             {
-                videoInput.Stop();
+                FinalVideo.Stop();
             }
         }
 
         private void FinalVideo_NewFrame(object sender, NewFrameEventArgs eventArgs)
-        {       
-            originalVideo = (Bitmap)eventArgs.Frame.Clone();
-            if (checkBoxMirror.Checked)   filters.ApplyMirrorFilter(originalVideo);       
-            
-            filteredVideo = filters.ApplyColorFilter((Bitmap)originalVideo.Clone(), colorForm.Filter);            
-            binarizedVideo = filters.ApplyBinaryFilter((Bitmap)filteredVideo.Clone());         
-            blobs = filters.LocalizeBlobs(binarizedVideo);
-            DrawOutput(drawOn);
+        {
+
+            originalVideo = resizeFilter.Apply((Bitmap)eventArgs.Frame.Clone());
+            if (checkBoxMirror.Checked)
+            {
+                Filters.ApplyMirrorFilter(originalVideo);
+            }
+            filteredVideo = Filters.ApplyColorFilter((Bitmap)originalVideo.Clone(), colorForm.Filter);
+            binarizedVideo = Filters.ApplyBinaryFilter((Bitmap)filteredVideo.Clone());
+            blobs = Filters.LocalizeBlobs(binarizedVideo);
+            drawOutput();
 
             pictureBox1.Image = originalVideo;
             pictureBox2.Image = filteredVideo;
@@ -58,13 +75,37 @@ namespace DigitRecognition
             try
             {
                 pictureBox4.Image = outputImage;
-
-            } catch
-            {
-
             }
-            
-        }      
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+        }
+
+        private void InitVideo()
+        {
+            VideoCaptureDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
+            foreach (FilterInfo VideoCaptureDevice in VideoCaptureDevices)
+            {
+                comboBox1.Items.Add(VideoCaptureDevice.Name);
+            }
+
+            if (VideoCaptureDevices.Count > 0)
+            {
+                comboBox1.SelectedIndex = 0;
+            }
+
+        }
+
+        private void InitVideoCapture(int videoCameraResolutionMode)
+        {
+            FinalVideo = new VideoCaptureDevice(VideoCaptureDevices[comboBox1.SelectedIndex].MonikerString);
+            FinalVideo.VideoResolution = FinalVideo.VideoCapabilities[videoCameraResolutionMode];  // resolution
+            FinalVideo.NewFrame += new NewFrameEventHandler(FinalVideo_NewFrame);
+            captureInitialized = true;
+
+            FinalVideo.Start();
+        }
 
         private void buttonColorPick_Click(object sender, EventArgs e)
         {
@@ -73,26 +114,27 @@ namespace DigitRecognition
 
         private void btnPlayOrPause_Click(object sender, EventArgs e)
         {
-            if (videoCaptureInProgress)
+
+            if (capture)
             {
-                videoInput.Stop();
-                videoCaptureInProgress = false;
+                FinalVideo.Stop();
+                capture = false;
                 btnPlayOrPause.Text = "Start";
             }
             else
             {
-                if (videoCaptureDevices.Count > 0)
+                if (VideoCaptureDevices.Count > 0)
                 {
-                    if (!videoCaptureInitialized)
+                    if (!captureInitialized)
                     {
-                        InitVideoCapture(4);
-                        videoCaptureInProgress = true;
+                        InitVideoCapture(2);
+                        capture = true;
                         btnPlayOrPause.Text = "Pause";
                     }
                     else
                     {
-                        videoInput.Start();
-                        videoCaptureInProgress = true;
+                        FinalVideo.Start();
+                        capture = true;
                         btnPlayOrPause.Text = "Pause";
                     }
                 }
@@ -104,75 +146,90 @@ namespace DigitRecognition
         {
             comboBox1.Items.Clear();
             comboBox1.Text = "";
-            GetVideoDevices();
+            InitVideo();
         }
 
-        private void Form1_KeyUp(object sender, KeyEventArgs e)
+        
+
+        private void drawOutput()
         {
-            if (e.KeyCode == Keys.X)
-            {
-                drawOn = false;
-                ExtractTextFromBitmap();
-            }
-            
-        }
 
-        private void Form1_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.X) drawOn = true;
-            else if (e.KeyCode == Keys.Z) outputImage = new Bitmap(320, 240);
-        }
-
-        private void GetVideoDevices()
-        {
-            videoCaptureDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
-            foreach (FilterInfo VideoCaptureDevice in videoCaptureDevices)
-            {
-                comboBox1.Items.Add(VideoCaptureDevice.Name);
-            }
-
-            if (videoCaptureDevices.Count > 0)
-            {
-                comboBox1.SelectedIndex = 0;
-            }
-
-        }
-
-        private void InitVideoCapture(int videoCameraResolutionMode)
-        {
-            videoInput = new VideoCaptureDevice(videoCaptureDevices[comboBox1.SelectedIndex].MonikerString);
-            videoInput.VideoResolution = videoInput.VideoCapabilities[videoCameraResolutionMode];
-            videoInput.NewFrame += new NewFrameEventHandler(FinalVideo_NewFrame);
-            videoInput.Start();
-            videoCaptureInitialized = true;
-        }
-
-        private void DrawOutput(bool active)
-        {
             if (blobs != null && blobs.Length > 0)
             {
                 newPoint.X = (int)blobs[0].CenterOfGravity.X; newPoint.Y = (int)blobs[0].CenterOfGravity.Y;
+                if ((newPoint.X - oldPoint.X) < 8 && (newPoint.X - oldPoint.X) > -8 && (newPoint.Y - oldPoint.Y) < 8 && (newPoint.Y - oldPoint.Y) > -8)
+                {
+                    counter++;
+                    if (counter >= 100 && active == false) //3,3s
+                    {
+                        active = true;
+                        outputImage = new Bitmap(320, 240);
+                        //reader.SpeakAsync("Zaczynasz rysowanie
+                        reader.SpeakAsync("You are starting to draw");
+
+                        counter = 0;
+                    }
+                    if (counter >= 150 && active == true) //5s
+                    {
+                        active = false;
+                        reader.SpeakAsync("Drawing has ended");
+                        ExtractTextFromBitmap();
+                        counter = 0;
+                    }
+
+                }
+                else counter = 0;
                 if (active)
-                {                    
+                {
+                    
                     Pen blackPen = new Pen(Color.Black, 7);
                     using (var graphics = Graphics.FromImage(outputImage))
                     {
                         graphics.DrawLine(blackPen, newPoint.X, newPoint.Y, oldPoint.X, oldPoint.Y);
                     }
+
                 }
                 oldPoint.X = newPoint.X; oldPoint.Y = newPoint.Y;
             }
-        }        
+
+        }
 
         public void ExtractTextFromBitmap()
         {
+            string plainText;
+            bool tell = false;
+            int b;
             using (var api = OcrApi.Create())
             {
                 api.Init(Languages.English);
                 api.SetVariable("tessedit_char_whitelist", "0123456789");
-                string plainText = api.GetTextFromImage(outputImage);
-                labelRecognized.Text = plainText;
+                plainText = api.GetTextFromImage(outputImage);
+
+
             }
-        }  
+
+            foreach (int a in DigitTable)
+            {
+                if (int.TryParse(plainText, out b))
+                    if (a == b)
+                        tell = true;
+
+
+            }
+
+            if (tell)
+            {
+                //string toSpeech = "Rozpoznana cyfra to " + plainText;
+                string toSpeech = "Recognized digit is " + plainText;
+                reader.SpeakAsync(toSpeech);
+            }
+            else
+            {
+
+                //reader.SpeakAsync("Nie rozpoznano. Spróbuj jeszcze raz");
+                reader.SpeakAsync("Not recognized. Try again!");
+
+            }
+        }      
     }
 }
