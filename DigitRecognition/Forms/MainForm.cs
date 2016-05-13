@@ -9,8 +9,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Speech.Synthesis;
-
-
+using System.Timers;
 
 namespace DigitRecognition
 {
@@ -29,7 +28,10 @@ namespace DigitRecognition
 
         //speech
         private SpeechSynthesizer reader;
-        private int counter = 0;
+        
+        private int time = 0; //miliseconds
+        private int userTime = 4000; //1s
+        System.Timers.Timer timer;
         private int[] DigitTable = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
         ResizeBicubic resizeFilter = new ResizeBicubic(320, 240);
 
@@ -43,8 +45,18 @@ namespace DigitRecognition
                 InitVideo();
                 colorForm = new HSLFilteringForm();
                 reader = new SpeechSynthesizer();
+
+                timer = new System.Timers.Timer();
+                timer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
+                timer.Interval = 100;
+                timer.Enabled = true;
             }
 
+        }
+
+        private void OnTimedEvent(object source, ElapsedEventArgs e)
+        {
+            time+=100;
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -69,8 +81,7 @@ namespace DigitRecognition
             drawOutput();
 
             pictureBox1.Image = originalVideo;
-            pictureBox2.Image = filteredVideo;
-            pictureBox3.Image = binarizedVideo;
+            pictureBox2.Image = binarizedVideo;
 
             try
             {
@@ -111,6 +122,11 @@ namespace DigitRecognition
         private void buttonColorPick_Click(object sender, EventArgs e)
         {
             colorForm.Show();
+        }
+
+        private void numericUpDown1_ValueChanged(object sender, EventArgs e)
+        {
+            userTime = (int)((float)numericUpDown1.Value * 1000);
         }
 
         private void btnPlayOrPause_Click(object sender, EventArgs e)
@@ -160,26 +176,25 @@ namespace DigitRecognition
                 newPoint.X = (int)blobs[0].CenterOfGravity.X; newPoint.Y = (int)blobs[0].CenterOfGravity.Y;
                 if ((newPoint.X - oldPoint.X) < 8 && (newPoint.X - oldPoint.X) > -8 && (newPoint.Y - oldPoint.Y) < 8 && (newPoint.Y - oldPoint.Y) > -8)
                 {
-                    counter++;
-                    if (counter >= 100 && active == false) //3,3s
+                    
+                    if (time >= userTime && active == false) 
                     {
                         active = true;
                         outputImage = new Bitmap(320, 240);
-                        //reader.SpeakAsync("Zaczynasz rysowanie
-                        reader.SpeakAsync("You are starting to draw");
+                        reader.SpeakAsync("Zaczynasz rysowanie");
 
-                        counter = 0;
+                        time = 0;
                     }
-                    if (counter >= 150 && active == true  )  //5s
+                    if (time >= userTime && active == true  )  
                     {
                         active = false;
-                        reader.SpeakAsync("Drawing has ended");
+                        reader.SpeakAsync("Rysowanie zakończone!");
                         ExtractTextFromBitmap();
-                        counter = 0;
+                        time = 0;
                     }
 
                 }
-                else counter = 0;
+                else time = 0;
                 if (active)
                 {
 
@@ -195,9 +210,9 @@ namespace DigitRecognition
             {
                 
                     active = false;
-                    reader.SpeakAsync("Drawing has ended");
+                    reader.SpeakAsync("Rysowanie zakończone!");
                     ExtractTextFromBitmap();
-                    counter = 0;
+                    time = 0;
                 
             }
 
@@ -228,16 +243,14 @@ namespace DigitRecognition
 
             if (tell)
             {
-                //string toSpeech = "Rozpoznana cyfra to " + plainText;
-                string toSpeech = "Recognized digit is " + plainText;
+                string toSpeech = "Rozpoznana cyfra to " + plainText;
                 reader.SpeakAsync(toSpeech);
                 tell = false;
             }
             else
             {
 
-                //reader.SpeakAsync("Nie rozpoznano. Spróbuj jeszcze raz");
-                reader.SpeakAsync("Not recognized. Try again!");
+                reader.SpeakAsync("Nie rozpoznano. Spróbuj jeszcze raz");
 
             }
         }
